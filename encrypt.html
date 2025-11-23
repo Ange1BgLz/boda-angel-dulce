@@ -1,0 +1,6 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+<script>
+    const password = "boda2025secreta"; // <--- PON TU CONTRASEÑA AQUÍ
+    const hash = CryptoJS.SHA256(password).toString();
+    document.write("Copia esta cadena y pégala dentro de un archivo llamado secret.bin: <br><br><b>" + hash + "</b>");
+</script>

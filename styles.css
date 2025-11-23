@@ -1,0 +1,184 @@
+/* style.css */
+
+/* 1. Variables por defecto (Fallback) */
+:root {
+    --color-primary: #6c757d;    /* Gris por defecto */
+    --color-secondary: #adb5bd;  /* Gris claro por defecto */
+    --color-bg: #f8f9fa;         /* Fondo claro por defecto */
+    --hero-overlay: rgba(0, 0, 0, 0.4);
+}
+
+/* 2. Estilos Globales */
+body {
+    background-color: var(--color-bg);
+    font-family: 'Lato', sans-serif;
+    color: #4a4a4a;
+    overflow-x: hidden;
+    transition: background-color 0.5s ease; /* Suaviza el cambio de color */
+}
+
+h1, h2, h3 {
+    font-family: 'Playfair Display', serif;
+    color: var(--color-primary);
+    transition: color 0.3s ease;
+}
+
+.script-font {
+    font-family: 'Great Vibes', cursive;
+    color: var(--color-secondary);
+    transition: color 0.3s ease;
+}
+
+/* 3. Hero Section (Portada) */
+.hero {
+    height: 100vh;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+    overflow: hidden;
+    background-color: #333; /* Fondo de carga mientras llega la imagen */
+}
+
+/* Capas del Hero */
+#hero-bg-image {
+    position: absolute;
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%;
+    background-size: cover; 
+    background-position: center; 
+    z-index: 0;
+    transition: background-image 0.5s ease;
+}
+
+#hero-bg-video {
+    position: absolute; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%;
+    object-fit: cover; 
+    z-index: 0; 
+    display: none; /* Se activa via JS */
+}
+
+.hero-overlay {
+    position: absolute; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%;
+    background: var(--hero-overlay); 
+    z-index: 1;
+}
+
+.hero-content { 
+    position: relative; 
+    z-index: 2; 
+}
+
+.hero h1 { 
+    font-size: 4rem; 
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    color: white; /* Forzamos blanco en el hero */
+}
+
+/* 4. Componentes UI */
+.section-padding { padding: 80px 0; }
+
+.wedding-card {
+    background: white;
+    border-radius: 15px;
+    padding: 40px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease;
+    border: none;
+}
+
+.wedding-card:hover { transform: translateY(-5px); }
+
+.icon-box {
+    font-size: 2.5rem;
+    color: var(--color-secondary);
+    margin-bottom: 20px;
+    transition: color 0.3s ease;
+}
+
+/* Timeline */
+.timeline-item {
+    padding: 20px;
+    border-left: 2px solid var(--color-primary);
+    position: relative;
+    margin-bottom: 20px;
+    transition: border-color 0.3s ease;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -9px;
+    top: 24px;
+    width: 16px;
+    height: 16px;
+    background: white;
+    border: 2px solid var(--color-primary);
+    border-radius: 50%;
+    transition: border-color 0.3s ease;
+}
+
+/* Botones */
+.btn-rsvp {
+    background-color: var(--color-primary);
+    color: white;
+    padding: 15px 40px;
+    border-radius: 50px;
+    border: none;
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+}
+
+.btn-rsvp:hover {
+    filter: brightness(0.9);
+    color: white;
+}
+
+/* 5. Controles de Música (Flotante) */
+#music-control {
+    position: fixed; 
+    bottom: 20px; 
+    left: 20px; 
+    z-index: 100;
+    background: rgba(255,255,255,0.8); 
+    border-radius: 50%; 
+    width: 50px; 
+    height: 50px;
+    display: none; 
+    justify-content: center; 
+    align-items: center; 
+    cursor: pointer;
+    color: var(--color-primary);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2); 
+    transition: transform 0.3s;
+}
+
+#music-control:hover { transform: scale(1.1); }
+
+.playing-animation { animation: pulse 2s infinite; }
+
+@keyframes pulse { 
+    0% { box-shadow: 0 0 0 0 rgba(138, 154, 91, 0.7); } 
+    70% { box-shadow: 0 0 0 10px rgba(138, 154, 91, 0); } 
+    100% { box-shadow: 0 0 0 0 rgba(138, 154, 91, 0); } 
+}
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+    .hero h1 { font-size: 3rem; }
+    .section-padding { padding: 50px 0; }
+}

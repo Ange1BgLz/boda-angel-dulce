@@ -1,0 +1,29 @@
+{
+  "meta": {
+    "title": "Boda de Ana & Carlos"
+  },
+  "theme": {
+    "primaryColor": "#8A9A5B",
+    "secondaryColor": "#D4AF37",
+    "backgroundColor": "#FAFAF5"
+  },
+  "hero": {
+    "preTitle": "¡Nos casamos!",
+    "names": "Ana & Carlos",
+    "dateString": "25 • OCTUBRE • 2025",
+    "ctaText": "Confirmar Asistencia",
+    "type": "image", // (image|video)
+    "url": "https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80"
+  },
+  "music": {
+    "enabled": false,
+    "url": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+  },
+  "details": {
+    "description": "Estamos muy emocionados de celebrar este día especial."
+  },
+  "rsvp": {
+    "deadline": "1 de Octubre",
+    "formspreeId": "TU_ID"
+  }
+}
