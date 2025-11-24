@@ -19,8 +19,9 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .catch(error => {
             console.error('Error crítico:', error);
-            alert(error);
-            alert("Error cargando la configuración. Revisa la consola.");
+            alert("Error cargando la configuración.\n
+            error
+            ");
         });
     
     // Configurar listeners del panel de admin
