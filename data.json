@@ -1,18 +1,18 @@
 {
   "wedding": {
-    "groomName": "Angel",
+    "groomName": "Ángel",
     "brideName": "Dulce",
     "eventDate": "2025-12-26T16:00",
-    "rsvpDeadline": "2025-10-01"
+    "rsvpDeadline": "2025-12-15"
   },
   "theme": {
-    "primaryColor": "#8A9A5B",
+    "primaryColor": "#4d0000",
     "secondaryColor": "#D4AF37",
     "backgroundColor": "#FAFAF5"
   },
   "hero": {
     "preTitle": "¡Nos casamos!",
-    "ctaText": "Confirmar Asistencia",
+    "ctaText": "Confirma tu asistencia",
     "type": "image",
     "url": "https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80"
   },
@@ -25,23 +25,43 @@
   },
   "itinerary": [
     {
-      "time": "16:00",
-      "activity": "Ceremonia Religiosa",
-      "description": "Parroquia San Miguel. Por favor llegar 15 minutos antes."
+      "time": "15:30",
+      "activity": "Recepción de invitados",
+      "description": ""
     },
     {
-      "time": "18:00",
-      "activity": "Recepción",
-      "description": "Hacienda Los Arcos. Cóctel de bienvenida."
+      "time": "16:00",
+      "activity": "Ceremonia civil",
+      "description": ""
+    },
+    {
+      "time": "16:30",
+      "activity": "Sesión de fotos",
+      "description": ""
+    },
+    {
+      "time": "17:00",
+      "activity": "Comida",
+      "description": "Asado tradicional de bodas"
+    },
+    {
+      "time": "18:30",
+      "activity": "Postre",
+      "description": ""
     },
     {
       "time": "20:00",
-      "activity": "Cena",
-      "description": "Menú de 3 tiempos."
+      "activity": "Brindis",
+      "description": ""
+    },
+    {
+      "time": "21:00",
+      "activity": "Grupo norteño",
+      "description": "¡A bailar!"
     }
   ],
   "giftRegistry": {
-    "enabled": true,
+    "enabled": false,
     "description": "Su presencia es nuestro mejor regalo, pero si desean tener un detalle con nosotros sugerimos estas opciones:",
     "buttons": [
       {
@@ -58,10 +78,22 @@
     "formspreeId": "TU_ID_AQUI"
   },
   "parents": {
-    "groomFather": { "name": "Nombre del padre del novio", "deceased": false },
-    "groomMother": { "name": "Nombre de la madre del novio", "deceased": false },
-    "brideFather": { "name": "Nombre del padre de la novia", "deceased": false },
-    "brideMother": { "name": "Nombre de la madre de la novia", "deceased": false }
+    "groomFather": {
+      "name": "Miguel Ángel Bobadilla Niebla",
+      "deceased": false
+    },
+    "groomMother": {
+      "name": "Ma. Aurora González Sandoval",
+      "deceased": false
+    },
+    "brideFather": {
+      "name": "Raúl Escamilla",
+      "deceased": false
+    },
+    "brideMother": {
+      "name": "Leticia Olivas",
+      "deceased": false
+    }
   },
-  "eventGuidelines": "1. Por favor llega al menos 20 minutos antes del inicio para que podamos comenzar puntuales.\n2. Te pedimos seguir el código de vestimenta indicado en la invitación.\n3. Confirma tu asistencia lo antes posible para ayudarnos a organizar todo perfecto.\n4. Por favor asiste solo con los invitados asignados en tu invitación.\n5. Sigue las indicaciones del personal y disfruta la celebración.\n6. Recuerda que el evento tiene un horario de cierre, ¡aprovecha cada momento!"
+  "eventGuidelines": "1. Por favor llega al menos 20 minutos antes del inicio para que podamos comenzar puntuales.\n2. Confirma tu asistencia lo antes posible para ayudarnos a organizar todo perfecto.\n3. Sigue las indicaciones del personal y disfruta la celebración.\n4. Recuerda que el evento tiene un horario de cierre, ¡aprovecha cada momento!"
 }
