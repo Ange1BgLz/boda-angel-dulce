@@ -187,6 +187,11 @@ h1, h2, h3 {
   font-family: 'Playfair Display', serif;
   letter-spacing: 1px;
   box-shadow: 0 2px 8px #d4af3760;
+  transition: background 0.5s, color 0.5s;
+}
+#open-envelope-btn:hover {
+  filter: brightness(1.1);
+  color: #fff;
 }
 
 /* 4. Componentes UI */

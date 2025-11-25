@@ -37,7 +37,7 @@
 
     <nav class="navbar navbar-expand-lg fixed-top bg-white shadow-sm">
         <div class="container">
-            <a class="navbar-brand script-font fs-3" href="#" id="nav-names">A & C</a>
+            <a class="navbar-brand script-font fs-3" href="#" id="nav-names"></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -79,44 +79,42 @@
         </div>
     </section>
 
-    <section class="section-padding bg-white animated-fadein">
+    <section class="section-padding bg-white animated-fadein" id="parents">
         <div class="container">
-            <h2 class="display-5 text-center mb-5">Padres de los Novios</h2>
-            <div class="row justify-content-center" id="parents-section"></div>
+            <h2 class="display-5 text-center mb-5 animated-fadein-text delay-1">Padres de los Novios</h2>
+            <div class="row justify-content-center animated-fadein-text delay-2" id="parents-section"></div>
         </div>
     </section>
 
-    <section class="section-padding bg-white animated-fadein">
+    <section class="section-padding bg-white animated-fadein" id="itinerary">
         <div class="container">
-            <h2 class="display-5 text-center mb-5">Itinerario</h2>
-            <div class="row justify-content-center">
-                <div class="col-md-8 col-lg-6" id="itinerary-container">
-                    </div>
+            <h2 class="display-5 text-center mb-5 animated-fadein-text delay-1">Itinerario</h2>
+            <div class="row justify-content-center animated-fadein-text delay-2">
+                <div class="col-md-8 col-lg-6" id="itinerary-container"></div>
             </div>
         </div>
     </section>
 
-    <section class="section-padding text-center animated-fadein">
+    <section class="section-padding text-center animated-fadein" id="registry">
         <div class="container">
-            <i class="bi bi-gift fs-1 text-muted mb-3 d-block"></i>
-            <h3>Mesa de Regalos</h3>
-            <p class="text-muted" id="registry-desc"></p>
-            <div class="d-flex justify-content-center gap-3 mt-4 flex-wrap" id="registry-buttons">
-                </div>
+            <i class="bi bi-gift fs-1 text-muted mb-3 d-block animated-fadein-text delay-1"></i>
+            <h3 class="animated-fadein-text delay-2">Mesa de Regalos</h3>
+            <p class="text-muted animated-fadein-text delay-3" id="registry-desc"></p>
+            <div class="d-flex justify-content-center gap-3 mt-4 flex-wrap animated-fadein-text delay-4" id="registry-buttons"></div>
         </div>
     </section>
 
     <section id="rsvp" class="section-padding animated-fadein" style="background-color: #f2f4ef;">
         <div class="container">
-            <div class="row justify-content-center">
+            <div class="row justify-content-center animated-fadein-text delay-1">
                 <div class="col-lg-8">
-                    <div class="wedding-card text-center">
+                    <div class="wedding-card text-center animated-fadein-text delay-2">
                         <h2 class="mb-4">¿Nos acompañas?</h2>
                         <p class="mb-4">Por favor confirma antes del <strong id="rsvp-deadline"></strong>.</p>
                         <form id="rsvp-form" method="POST">
                             <div class="row g-3 text-start">
                                 <div class="col-md-6"><input type="text" name="nombre" class="form-control" placeholder="Nombre Completo" required></div>
-                                <div class="col-md-6"><input type="tel" name="telefono" class="form-control" placeholder="Teléfono" required></div>
+                                <div class="col-md-6"><input type="tel" name="telefono" class="form-control" placeholder="Teléfono"></div>
                                 <div class="col-12">
                                     <select name="asistencia" class="form-select" required>
                                         <option value="" disabled selected>Selecciona una opción</option>
@@ -141,15 +139,17 @@
             <div class="modal-content">
                 <div class="modal-header bg-dark text-white">
                     <h5 class="modal-title"><i class="bi bi-pencil-square me-2"></i>Editor de Boda</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    <div class="ms-auto d-flex align-items-center gap-2">
+                        <button type="button" class="btn btn-sm btn-light" id="minimize-admin-modal" title="Minimizar" style="font-size:1.2rem;line-height:1;">_</button>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body position-relative">
                     <form id="admin-form-container" class="row g-3"></form>
+                    <button type="button" class="btn btn-primary position-absolute" id="add-itinerary-btn" style="right: 2rem; top: 1rem; z-index: 10;">+ Evento</button>
                 </div>
                 <div class="modal-footer bg-light">
                     <small class="text-muted me-auto">Cambios aplicados en tiempo real (Vista Previa).</small>
-                    <button type="button" class="btn btn-primary" onclick="addItineraryItem()">+ Evento</button>
-                     <button type="button" class="btn btn-info text-white" onclick="addRegistryItem()">+ Regalo</button>
                     <button type="button" class="btn btn-success" onclick="downloadConfig()">
                         <i class="bi bi-download me-2"></i>Guardar Cambios (JSON)
                     </button>
@@ -158,8 +158,31 @@
         </div>
     </div>
 
+    <!-- Modal de confirmación de cierre -->
+    <div class="modal fade" id="confirmCloseModal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">¿Salir del editor?</h5>
+          </div>
+          <div class="modal-body">
+            <p>Hay cambios realizados en la vista y configuraciones. Si cierras ahora, podrías perderlos si no generas el archivo JSON.</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-danger" id="confirm-close-admin">Salir sin guardar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="admin-modal-minimized" style="display:none; position:fixed; bottom:2rem; right:2rem; z-index:2000;">
+      <button class="btn btn-dark rounded-pill shadow" id="restore-admin-modal"><i class="bi bi-pencil-square me-2"></i>Restaurar editor</button>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/add-to-calendar-button@2.4.7/dist/atcb.min.js" async defer></script>
     <script src="app.js"></script>
 </body>
 </html>
+`

@@ -1,9 +1,9 @@
-let currentData = {}; 
+let currentData = {};
 let bgMusic = document.getElementById('bg-music');
 
 document.addEventListener('DOMContentLoaded', () => {
     // 1. Cargar configuración inicial
-    fetch('data.json')
+    fetch('data.json?ts=' + Date.now())
         .then(response => {
             if (!response.ok) throw new Error("No se pudo leer data.json");
             return response.json();
@@ -11,20 +11,22 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(data => {
             // Asignamos a la variable global
             currentData = data;
-            
+
             // Renderizamos el sitio
             renderSite(data);
-            
+
             // Envelope animado
             document.getElementById('envelope-names').innerHTML = `${data.wedding.brideName} <br>&<br> ${data.wedding.groomName}`;
             document.getElementById('envelope-date').textContent = formatDateMexico(data.wedding.eventDate);
             document.getElementById('welcome-envelope').style.display = 'flex';
             document.getElementById('main-content').style.display = 'none';
-            document.getElementById('open-envelope-btn').onclick = function() {
+            document.body.style.overflow = 'hidden'; // Desactiva scroll
+            document.getElementById('open-envelope-btn').onclick = function () {
                 document.getElementById('welcome-envelope').classList.add('opened');
                 setTimeout(() => {
                     document.getElementById('welcome-envelope').style.display = 'none';
                     document.getElementById('main-content').style.display = '';
+                    document.body.style.overflow = ''; // Reactiva scroll
                 }, 1200);
             };
 
@@ -42,6 +44,106 @@ document.addEventListener('DOMContentLoaded', () => {
         btnAdmin.addEventListener('click', (e) => {
             e.preventDefault();
             openAdminMode();
+        });
+    }
+
+    // Minimizar admin modal
+    const adminModal = document.getElementById('adminModal');
+    const minimizeBtn = document.getElementById('minimize-admin-modal');
+    const minimizedBar = document.getElementById('admin-modal-minimized');
+    const restoreBtn = document.getElementById('restore-admin-modal');
+    let confirmCloseModal = null;
+    let hasUnsavedChanges = false;
+
+    if (adminModal) {
+        adminModalInstance = bootstrap.Modal.getOrCreateInstance(adminModal);
+        // Minimizar
+        minimizeBtn && minimizeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            // Cierra el modal sin mostrar popups
+            if (adminModalInstance) adminModalInstance.hide();
+            minimizedBar.style.display = '';
+            // Deshabilita el botón de admin en navbar
+            const btnAdmin = document.getElementById('btn-admin-mode');
+            if (btnAdmin) btnAdmin.classList.add('disabled');
+            if (btnAdmin) btnAdmin.setAttribute('aria-disabled', 'true');
+            if (btnAdmin) btnAdmin.style.pointerEvents = 'none';
+        });
+        // Restaurar
+        restoreBtn && restoreBtn.addEventListener('click', () => {
+            if (adminModalInstance) adminModalInstance.show();
+            minimizedBar.style.display = 'none';
+            // Habilita el botón de admin en navbar
+            const btnAdmin = document.getElementById('btn-admin-mode');
+            if (btnAdmin) btnAdmin.classList.remove('disabled');
+            if (btnAdmin) btnAdmin.removeAttribute('aria-disabled');
+            if (btnAdmin) btnAdmin.style.pointerEvents = '';
+        });
+        // Confirmar cierre si hay cambios SOLO con botón cerrar
+        const closeBtn = adminModal.querySelector('.modal-header .btn-close');
+        if (closeBtn) {
+            closeBtn.replaceWith(closeBtn.cloneNode(true));
+            const newCloseBtn = adminModal.querySelector('.modal-header .btn-close');
+            newCloseBtn.addEventListener('click', (e) => {
+                // Comparar el JSON actual con el original
+                const currentConfigJSON = JSON.stringify(currentData);
+                if (originalConfigJSON && currentConfigJSON !== originalConfigJSON) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    // Mostrar solo el modal de confirmación, sin cerrar el de edición
+                    confirmCloseModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('confirmCloseModal'));
+                    confirmCloseModal.show();
+                } // Si no hay cambios, cerrar el modal normalmente
+                // (No hacemos nada aquí, Bootstrap se encarga de cerrar el modal)
+            });
+        }
+        // Botón cancelar del modal de confirmación: solo cierra el modal de confirmación
+        const cancelBtn = document.querySelector('#confirmCloseModal .btn-secondary');
+        if (cancelBtn) {
+            cancelBtn.addEventListener('click', () => {
+                confirmCloseModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('confirmCloseModal'));
+                confirmCloseModal.hide();
+            });
+        }
+        // Botón salir sin guardar: restaura el JSON original y cierra el panel de edición
+        document.getElementById('confirm-close-admin').addEventListener('click', () => {
+            if (originalConfigJSON) {
+                const restored = JSON.parse(originalConfigJSON);
+                Object.keys(currentData).forEach(k => delete currentData[k]);
+                Object.assign(currentData, restored);
+                renderSite(currentData);
+                buildAdminForm();
+            }
+            confirmCloseModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('confirmCloseModal'));
+            confirmCloseModal.hide();
+            if (adminModalInstance) adminModalInstance.hide();
+            minimizedBar.style.display = 'none';
+            // Habilita el botón de admin en navbar
+            const btnAdmin = document.getElementById('btn-admin-mode');
+            if (btnAdmin) btnAdmin.classList.remove('disabled');
+            if (btnAdmin) btnAdmin.removeAttribute('aria-disabled');
+            if (btnAdmin) btnAdmin.style.pointerEvents = '';
+        });
+        // Salir sin guardar
+        document.getElementById('confirm-close-admin').addEventListener('click', () => {
+            hasUnsavedChanges = false;
+            confirmCloseModal.hide();
+            adminModalInstance.hide();
+            minimizedBar.style.display = 'none';
+            // Habilita el botón de admin en navbar
+            const btnAdmin = document.getElementById('btn-admin-mode');
+            if (btnAdmin) btnAdmin.disabled = false;
+        });
+        // Al guardar, limpiar flag
+        document.querySelector('.btn-success[onclick="downloadConfig()"]')?.addEventListener('click', () => {
+            hasUnsavedChanges = false;
+        });
+    }
+    // Botón +Evento en el body
+    const addItineraryBtn = document.getElementById('add-itinerary-btn');
+    if (addItineraryBtn) {
+        addItineraryBtn.addEventListener('click', () => {
+            window.addItineraryItem();
         });
     }
 });
@@ -89,7 +191,7 @@ function toInputDate(isoString) {
 // --- RENDERIZADO PRINCIPAL DEL SITIO ---
 function renderSite(data) {
     const root = document.documentElement;
-    
+
     // Validamos que existan las secciones principales para evitar errores
     const safeData = {
         theme: data.theme || {},
@@ -104,20 +206,39 @@ function renderSite(data) {
         eventGuidelines: data.eventGuidelines || ''
     };
 
+    const navNames = document.getElementById('nav-names');
+
     // Tema
     root.style.setProperty('--color-primary', safeData.theme.primaryColor || '#6c757d');
     root.style.setProperty('--color-secondary', safeData.theme.secondaryColor || '#adb5bd');
     root.style.setProperty('--color-bg', safeData.theme.backgroundColor || '#f8f9fa');
+
+    // Colores
+    const primaryColor = safeData.theme.primaryColor || '#6c757d';
+    const secondaryColor = safeData.theme.secondaryColor || '#adb5bd';
+
+    // Aplica color a textos y botón específicos
+    const invitadoH2 = document.querySelector('.envelope-letter-content h2.script-font');
+    if (invitadoH2) invitadoH2.style.color = primaryColor;
+    const envelopeNames = document.getElementById('envelope-names');
+    if (envelopeNames) envelopeNames.style.color = primaryColor;
+    const openEnvelopeBtn = document.getElementById('open-envelope-btn');
+    if (openEnvelopeBtn) {
+        openEnvelopeBtn.style.background = `linear-gradient(90deg, ${primaryColor} 0%, ${secondaryColor} 100%)`;
+        openEnvelopeBtn.style.color = '#fff';
+        openEnvelopeBtn.style.border = 'none';
+    }
+    if (navNames) navNames.style.color = primaryColor;
 
     // Nombres y Títulos
     const groom = safeData.wedding.groomName || "Novio";
     const bride = safeData.wedding.brideName || "Novia";
     const fullName = `${bride} <br>&<br> ${groom}`;
     document.title = `Boda de ${bride} & ${groom} - ¡Estás invitado!`;
-    const navNames = document.getElementById('nav-names');
-    if(navNames) navNames.textContent = `${bride.charAt(0)} & ${groom.charAt(0)}`;
+
+    if (navNames) navNames.textContent = `${bride.charAt(0)} & ${groom.charAt(0)}`;
     const heroNames = document.getElementById('hero-names');
-    if(heroNames) heroNames.innerHTML = fullName;
+    if (heroNames) heroNames.innerHTML = fullName;
 
     // Textos
     setText('hero-pretitle', safeData.hero.preTitle);
@@ -174,14 +295,14 @@ function renderSite(data) {
     // Lógica Hero Media
     const imgDiv = document.getElementById('hero-bg-image');
     const vidTag = document.getElementById('hero-bg-video');
-    
+
     if (safeData.hero.type === 'video') {
         imgDiv.style.display = 'none';
         vidTag.style.display = 'block';
-        if(vidTag.getAttribute('src') !== safeData.hero.url) vidTag.src = safeData.hero.url;
+        if (vidTag.getAttribute('src') !== safeData.hero.url) vidTag.src = safeData.hero.url;
     } else {
         vidTag.style.display = 'none';
-        vidTag.pause(); 
+        vidTag.pause();
         imgDiv.style.display = 'block';
         imgDiv.style.backgroundImage = `url('${safeData.hero.url}')`;
     }
@@ -196,34 +317,55 @@ function renderSite(data) {
         bgMusic.pause();
     }
 
-    // Itinerario Dinámico
+    // Itinerario Dinámico (24h a 12h, animación en cascada)
     const itinContainer = document.getElementById('itinerary-container');
-    if(itinContainer) {
-        itinContainer.innerHTML = ''; 
-        safeData.itinerary.forEach(item => {
+    if (itinContainer) {
+        itinContainer.innerHTML = '';
+        safeData.itinerary.forEach((item, idx) => {
+            const time12 = item.time ? new Date(`1970-01-01T${item.time}`).toLocaleTimeString('es-MX', { hour: 'numeric', minute: '2-digit', hour12: true }) : '';
+            const delayClass = `animated-fadein-text delay-${idx + 1}`;
             itinContainer.innerHTML += `
-                <div class="timeline-item">
-                    <h5 class="fw-bold">${item.time} - ${item.activity}</h5>
-                    <p class="text-muted mb-0">${item.description}</p>
+                <div class="timeline-item ${delayClass}">
+                    <h5 class="fw-bold">${time12} - ${item.activity}</h5>
+                    <p class="text-muted mb-0">${item.description || ''}</p>
                 </div>`;
         });
     }
 
-    // Botones Regalos
+    // Mesa de regalos: solo si enabled
     const regContainer = document.getElementById('registry-buttons');
-    if(regContainer) {
-        regContainer.innerHTML = '';
-        safeData.giftRegistry.buttons.forEach(btn => {
-            regContainer.innerHTML += `
-                <a href="${btn.url}" target="_blank" class="btn btn-outline-dark px-4 py-2">
-                    <i class="bi bi-gift me-2"></i>${btn.provider}
-                </a>`;
-        });
+    const regSection = regContainer ? regContainer.closest('.section-padding') : null;
+    if (safeData.giftRegistry && safeData.giftRegistry.enabled) {
+        if (regContainer) {
+            regContainer.innerHTML = '';
+            safeData.giftRegistry.buttons.forEach(btn => {
+                regContainer.innerHTML += `
+                    <a href="${btn.url}" target="_blank" class="btn btn-outline-dark px-4 py-2">
+                        <i class="bi bi-gift me-2"></i>${btn.provider}
+                    </a>`;
+            });
+        }
+        if (regSection) regSection.style.display = '';
+    } else if (regSection) {
+        regSection.style.display = 'none';
     }
 
     // Formspree
     const form = document.getElementById('rsvp-form');
-    if(form) form.action = `https://formspree.io/f/${safeData.rsvp.formspreeId || ''}`;
+    if (form) {
+        form.action = `https://formspree.io/f/${safeData.rsvp.formspreeId || ''}`;
+        // Controlar el campo de teléfono según el flag phoneRequired
+        const phoneInput = form.querySelector('input[name="telefono"]');
+        if (phoneInput) {
+            if (safeData.rsvp.phoneRequired) {
+                phoneInput.required = true;
+                phoneInput.parentElement.style.display = '';
+            } else {
+                phoneInput.required = false;
+                phoneInput.parentElement.style.display = '';
+            }
+        }
+    }
 }
 
 // Helper seguro para asignar texto
@@ -233,6 +375,8 @@ function setText(id, text) {
 }
 
 // --- ADMINISTRACIÓN Y SEGURIDAD ---
+let adminModalInstance = null; // Instancia global
+let originalConfigJSON = null; // Guardar el JSON original para comparar cambios
 
 async function openAdminMode() {
     // 1. Pedir contraseña
@@ -245,13 +389,18 @@ async function openAdminMode() {
         const response = await fetch('secret.bin');
         if (!response.ok) throw new Error("Falta secret.bin");
         const trueHash = await response.text();
-        
         if (inputHash.trim() === trueHash.trim()) {
             // 2. Si es correcto, CONSTRUIMOS el form con los datos ACTUALES (currentData)
             console.log("Abriendo editor con datos:", currentData);
-            buildAdminForm(); 
-            const adminModal = new bootstrap.Modal(document.getElementById('adminModal'));
-            adminModal.show();
+            buildAdminForm();
+            if (!adminModalInstance) {
+                adminModalInstance = bootstrap.Modal.getOrCreateInstance(document.getElementById('adminModal'));
+            }
+            // Guardar snapshot del JSON original para comparar cambios
+            fetch('data.json?ts=' + Date.now())
+                .then(r => r.json())
+                .then(json => { originalConfigJSON = JSON.stringify(json); });
+            adminModalInstance.show();
         } else {
             alert("⛔ Contraseña incorrecta");
         }
@@ -278,7 +427,7 @@ function buildAdminForm() {
     if (!currentData.rsvp) currentData.rsvp = {};
 
     // --- HELPER DE INPUT ---
-    const createInput = (label, value, type, callback, colClass="col-12", disabled=false, is12hTime=false) => {
+    const createInput = (label, value, type, callback, colClass = "col-12", disabled = false, is12hTime = false) => {
         const div = document.createElement('div');
         div.className = colClass;
         div.innerHTML = `<label class="form-label small fw-bold">${label}</label>`;
@@ -314,7 +463,7 @@ function buildAdminForm() {
     addSectionTitle("Los Novios");
     container.appendChild(createInput("Nombre Novio", currentData.wedding.groomName, "text", v => { currentData.wedding.groomName = v; renderSite(currentData); }, "col-6"));
     container.appendChild(createInput("Nombre Novia", currentData.wedding.brideName, "text", v => { currentData.wedding.brideName = v; renderSite(currentData); }, "col-6"));
-    
+
     // Fechas
     container.appendChild(createInput("Fecha Evento (Inicio)", currentData.wedding.eventDate, "datetime-local", v => { currentData.wedding.eventDate = v; renderSite(currentData); }, "col-6"));
     container.appendChild(createInput("Límite RSVP", currentData.wedding.rsvpDeadline, "date", v => { currentData.wedding.rsvpDeadline = v; renderSite(currentData); }, "col-6"));
@@ -324,7 +473,7 @@ function buildAdminForm() {
     container.appendChild(createInput("Subtítulo", currentData.hero.preTitle, "text", v => { currentData.hero.preTitle = v; renderSite(currentData); }));
     container.appendChild(createInput("CTA Text", currentData.hero.ctaText, "text", v => { currentData.hero.ctaText = v; renderSite(currentData); }));
     container.appendChild(createInput("URL Imagen/Video", currentData.hero.url, "text", v => { currentData.hero.url = v; renderSite(currentData); }));
-    
+
     // Select Tipo Fondo
     const typeDiv = document.createElement('div');
     typeDiv.className = "col-6";
@@ -361,7 +510,17 @@ function buildAdminForm() {
 
     // 6. RSVP
     addSectionTitle("RSVP");
-    container.appendChild(createInput("Formspree ID", currentData.rsvp.formspreeId, "text", v => { currentData.rsvp.formspreeId = v; renderSite(currentData); }));    
+    container.appendChild(createInput("Formspree ID", currentData.rsvp.formspreeId, "text", v => { currentData.rsvp.formspreeId = v; renderSite(currentData); }));
+    // Checkbox para hacer obligatorio el teléfono
+    const phoneReqDiv = document.createElement('div');
+    phoneReqDiv.className = "col-12 d-flex align-items-center mb-2";
+    phoneReqDiv.innerHTML = `
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="phone-required-switch" ${currentData.rsvp.phoneRequired ? 'checked' : ''}>
+            <label class="form-check-label small fw-bold ms-2" for="phone-required-switch">Teléfono obligatorio</label>
+        </div>`;
+    phoneReqDiv.querySelector('input').addEventListener('change', (e) => { currentData.rsvp.phoneRequired = e.target.checked; renderSite(currentData); });
+    container.appendChild(phoneReqDiv);
 
     // 7. ITINERARIO
     addSectionTitle("Itinerario");
@@ -492,44 +651,44 @@ function buildAdminForm() {
 }
 
 // --- FUNCIONES GLOBALES (Para que el HTML pueda llamarlas) ---
-window.addItineraryItem = function() {
-    if(!currentData.itinerary) currentData.itinerary = [];
+window.addItineraryItem = function () {
+    if (!currentData.itinerary) currentData.itinerary = [];
     currentData.itinerary.push({ time: "00:00", activity: "Nueva Actividad", description: "" });
     buildAdminForm();
     renderSite(currentData);
 };
 
-window.removeItineraryItem = function(index) {
+window.removeItineraryItem = function (index) {
     currentData.itinerary.splice(index, 1);
     buildAdminForm();
     renderSite(currentData);
 };
 
-window.addRegistryItem = function() {
-    if(!currentData.giftRegistry) currentData.giftRegistry = { buttons: [] };
-    if(!currentData.giftRegistry.buttons) currentData.giftRegistry.buttons = [];
+window.addRegistryItem = function () {
+    if (!currentData.giftRegistry) currentData.giftRegistry = { buttons: [] };
+    if (!currentData.giftRegistry.buttons) currentData.giftRegistry.buttons = [];
     currentData.giftRegistry.buttons.push({ provider: "Tienda", url: "https://" });
     buildAdminForm();
     renderSite(currentData);
 };
 
-window.removeRegistryItem = function(index) {
+window.removeRegistryItem = function (index) {
     currentData.giftRegistry.buttons.splice(index, 1);
     buildAdminForm();
     renderSite(currentData);
 };
 
-window.downloadConfig = function() {
+window.downloadConfig = function () {
     const dataStr = JSON.stringify(currentData, null, 2);
-    const blob = new Blob([dataStr], {type: "application/json"});
+    const blob = new Blob([dataStr], { type: "application/json" });
     const url = URL.createObjectURL(blob);
-    
+
     const a = document.createElement('a');
     a.href = url;
     a.download = "data.json";
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-    
+
     alert("✅ Archivo data.json generado. Súbelo a GitHub.");
 };
