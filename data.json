@@ -85,7 +85,7 @@
     ]
   },
   "rsvp": {
-    "formspreeId": "TU_ID_AQUI",
+    "scriptUrl": "",
     "phoneRequired": false
   }
 }

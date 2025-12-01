@@ -198,6 +198,14 @@
     <div id="admin-modal-minimized" style="display:none; position:fixed; bottom:2rem; right:2rem; z-index:2000;">
       <button class="btn btn-dark rounded-pill shadow" id="restore-admin-modal"><i class="bi bi-pencil-square me-2"></i>Restaurar editor</button>
     </div>
+
+    <!-- 1. LIBRERÍAS DE GOOGLE (Carga asíncrona) -->
+    <script src="https://accounts.google.com/gsi/client" async defer onload="gisLoaded()"></script>
+    <script src="https://apis.google.com/js/api.js" async defer onload="gapiLoaded()"></script>
+    
+    <!-- 2. TU SCRIPT DE CONFIGURACIÓN GOOGLE -->
+    <script src="google-setup.js"></script>
+
     <script src="app.js"></script>
 </body>
 </html>
