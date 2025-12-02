@@ -126,8 +126,8 @@ async function createWeddingBackend() {
         if(statusDiv) statusDiv.innerHTML = '<div class="spinner-border spinner-border-sm me-2"></div> Configurando columnas...';
         
         await gapi.client.sheets.spreadsheets.values.update({
-            spreadsheetId: spreadsheetId, range: 'Respuestas!A1:E1', valueInputOption: 'RAW',
-            resource: { values: [['Fecha', 'Nombre', 'Teléfono', 'Asistencia', 'Mensaje']] }
+            spreadsheetId: spreadsheetId, range: 'Respuestas!A1:F1', valueInputOption: 'RAW',
+            resource: { values: [['Fecha', 'Nombre', 'Teléfono', 'N° de invitados', 'Asistencia', 'Mensaje']] }
         });
 
         // C. OBTENER PLANTILLAS (Backend y Manifiesto)

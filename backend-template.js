@@ -41,6 +41,7 @@ function doPost(e) {
         // --- VALIDACIÓN DE CAMPOS ---
         // Nos aseguramos de que no sean undefined
         var nombre = data.nombre || '';
+        var invitados = data.invitados || '1';
         var telefono = data.telefono || '';
         var asistencia = data.asistencia || '';
         var mensaje = data.mensaje || '';
@@ -50,6 +51,7 @@ function doPost(e) {
             sheet.appendRow([
                 new Date(), 
                 nombre, 
+                invitados,
                 telefono, 
                 asistencia, 
                 mensaje

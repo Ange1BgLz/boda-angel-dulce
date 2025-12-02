@@ -22,7 +22,8 @@
     "url": "KARAOKE%20BOLERO%20SOUL%20-%20Si%20nos%20dejan%20%5BqEW6EtQbPTQ%5D.mp3"
   },
   "details": {
-    "description": "Estamos muy emocionados de celebrar este día especial con nuestra familia y amigos."
+    "description": "Estamos muy emocionados de celebrar este día especial con nuestra familia y amigos.",
+    "subtitle": "¡Estás invitado a nuestra boda!"
   },
   "parents": {
     "groomFather": {
@@ -71,7 +72,7 @@
     }
   ],
   "giftRegistry": {
-    "enabled": false,
+    "enabled": true,
     "description": "Su presencia es nuestro mejor regalo, pero si desean tener un detalle con nosotros sugerimos estas opciones:",
     "buttons": [
       {
@@ -85,7 +86,7 @@
     ]
   },
   "rsvp": {
-    "scriptUrl": "https://script.google.com/macros/s/AKfycbz84zqnmzO5EE8sls09X-7tQaV34e4lEzryAcFy4p1rJREEbIuWs7VSgx5g5yb685kI/exec",
+    "scriptUrl": "https://script.google.com/macros/s/AKfycbxavugi-AXa2xkIedSLndMxBLRPAvIUOkh0r2Tw3_ZUQ0f1gzjpgbQ_ufLu8ZX3srQ2/exec",
     "phoneRequired": false
   }
 }

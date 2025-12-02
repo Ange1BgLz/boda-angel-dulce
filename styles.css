@@ -6,6 +6,7 @@
     --color-secondary: #adb5bd;  /* Gris claro por defecto */
     --color-bg: #f8f9fa;         /* Fondo claro por defecto */
     --hero-overlay: rgba(0, 0, 0, 0.4);
+    --color-primary-rgb: 108, 117, 125; /* Valor RGB para el color primario */
 }
 
 /* --- THIRD COLOR DINÁMICO --- */

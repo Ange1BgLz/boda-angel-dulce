@@ -1,0 +1,17 @@
+<div id="google-setup-component" class="col-12 mt-3 p-3 border rounded bg-white shadow-sm">
+    <h6 class="text-primary"><i class="bi bi-google me-2"></i>Google Sheets</h6>
+    <p class="small text-muted mb-2">
+        Crea automáticamente la hoja de Excel en tu cuenta de Google.
+    </p>
+    
+    <button type="button" class="btn btn-outline-primary w-100 mb-2" id="btn-google-setup" disabled onclick="handleGoogleSetup()">
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Cargando Google...
+    </button>
+    
+    <div id="google-setup-status" style="display:none; font-size: 0.85rem;"></div>
+
+    <label class="form-label small fw-bold mt-2">URL del Script (Pegar resultado aquí)</label>
+    <input type="text" class="form-control font-monospace small" id="google-script-url-input" 
+           placeholder="https://script.google.com/..." 
+           value="">
+</div>
